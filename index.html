@@ -111,8 +111,20 @@
   /* ---------- Hero ----------
      1920 x 1080 at desktop: a 733px photo band + a 347px white frame.
      Both scale fluidly; the band keeps its aspect ratio at every width. */
-  .hero { position: relative; background: #fff; margin-top: -64px; }
-  .hero-media { position: relative; width: 100%; aspect-ratio: 1920 / 733; overflow: hidden; }
+  /* The whole hero — photo band plus text frame — always fits the viewport.
+     If the natural 1920x1080 proportions would overflow, the photo band gives
+     up the height (it crops from the bottom, keeping the blurred nav band) and
+     the text frame is never touched. --chrome is the review ribbon's height. */
+  .hero {
+    position: relative; background: #fff; margin-top: -64px;
+    display: flex; flex-direction: column;
+    max-height: calc(100vh - var(--chrome, 0px));
+    max-height: calc(100svh - var(--chrome, 0px));
+  }
+  .hero-media {
+    position: relative; width: 100%; aspect-ratio: 1920 / 733; overflow: hidden;
+    flex: 0 1 auto; min-height: 0;
+  }
   .hero-media img {
     position: absolute; inset: 0; width: 100%; height: 100%;
     object-fit: cover; object-position: 50% 0; display: block;
@@ -129,6 +141,7 @@
      exactly on 1920x1080 at full size. Floors stop it collapsing on small screens. */
   .hero-bar {
     display: flex; align-items: flex-end; justify-content: space-between;
+    flex: 0 0 auto;
     gap: 28px clamp(24px, 2.5vw, 48px);
     min-height: clamp(220px, 18.07vw, 460px);
     padding: clamp(32px, 2.92vw, 56px) clamp(24px, 5vw, 96px) clamp(40px, 4.06vw, 78px);
@@ -160,6 +173,9 @@
   .hero-btn:hover { filter: brightness(1.04); }
 
   /* ---------- Guiding principles ---------- */
+  /* Cream surface gives the hero a hard bottom edge. Leadership drops to white
+     so the two cream bands don't run together. */
+  .principles { background: var(--cream); }
   .principle-row {
     display: grid; grid-template-columns: 170px 1fr 300px; gap: 40px;
     padding: 44px 0; border-bottom: 1px solid var(--line); align-items: center;
@@ -184,7 +200,7 @@
   .value-item p { color: var(--muted); font-size: 14.5px; margin-top: 8px; }
 
   /* ---------- Leadership ---------- */
-  .team { background: var(--cream); }
+  .team { background: #fff; }
   .team-featured {
     display: grid; grid-template-columns: 280px 1fr; gap: 56px; align-items: start;
     margin: 56px 0 48px;
@@ -364,7 +380,7 @@
 <!-- Review ribbon -->
 <div class="ribbon" id="ribbon">
   <b>Prototype for internal review</b> — final build happens in Webflow. Roles, leader bios and some section copy are placeholders (see README).
-  <button aria-label="Dismiss" onclick="document.getElementById('ribbon').remove()">&times;</button>
+  <button aria-label="Dismiss" onclick="document.getElementById('ribbon').remove(); syncChrome();">&times;</button>
 </div>
 
 <!-- ======================= NAV (real-site clone) ======================= -->
@@ -435,7 +451,7 @@
 </header>
 
 <!-- ======================= GUIDING PRINCIPLES ======================= -->
-<section class="section">
+<section class="section principles">
   <div class="container">
     <h2 class="section-title">Our Guiding Principles</h2>
 
@@ -641,6 +657,17 @@
 </footer>
 
 <script>
+  /* ---------------- Keep the hero inside the viewport ----------------
+     The review ribbon sits above the hero, so its height comes off the cap.
+     Prototype-only: on the real site there is no ribbon and --chrome stays 0. */
+  function syncChrome() {
+    const ribbon = document.getElementById('ribbon');
+    const h = ribbon ? ribbon.offsetHeight : 0;
+    document.documentElement.style.setProperty('--chrome', h + 'px');
+  }
+  syncChrome();
+  window.addEventListener('resize', syncChrome);
+
   /* ---------------- Hero CTA: jump straight to the roles list, no smooth scroll ---------------- */
   document.querySelector('.hero-btn').addEventListener('click', e => {
     const target = document.getElementById('roles');
