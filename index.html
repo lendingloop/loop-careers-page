@@ -60,7 +60,9 @@
   }
 
   /* ---------- Nav ---------- */
-  .nav-wrap { background: var(--green-ink); position: sticky; top: 0; z-index: 50; }
+  /* Transparent and in normal flow, matching the live site: the hero pulls up
+     underneath it so the photo runs to the top of the page. */
+  .nav-wrap { background: transparent; position: relative; z-index: 50; }
   .nav {
     max-width: 1200px; margin: 0 auto; padding: 0 24px;
     display: flex; align-items: center; gap: 8px; height: 64px;
@@ -106,24 +108,56 @@
   .btn-ghost { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.45); }
   .btn-ghost:hover { border-color: #fff; }
 
-  /* ---------- Hero ---------- */
-  .hero {
-    background: linear-gradient(160deg, #035239 0%, #011710 100%);
-    background-image: url('assets/loop-hero-background.png');
-    background-size: cover; background-position: center;
-    color: #fff; text-align: center; padding: 120px 24px 128px;
+  /* ---------- Hero ----------
+     1920 x 1080 at desktop: a 733px photo band + a 347px white frame.
+     Both scale fluidly; the band keeps its aspect ratio at every width. */
+  .hero { position: relative; background: #fff; margin-top: -64px; }
+  .hero-media { position: relative; width: 100%; aspect-ratio: 1920 / 733; overflow: hidden; }
+  .hero-media img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: 50% 0; display: block;
   }
-  .hero-chip {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22);
-    color: #e8f5ea; font-size: 13px; font-weight: 500;
-    padding: 7px 16px; border-radius: var(--radius-pill); margin-bottom: 28px;
+  /* The top of the photo is blurred in the asset itself; this scrim darkens that
+     band so the white nav clears 4.5:1 contrast over it. */
+  .hero-scrim {
+    position: absolute; top: 0; left: 0; right: 0; height: 36%;
+    background: linear-gradient(180deg,
+      rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.34) 34%, rgba(0,0,0,0.12) 68%, rgba(0,0,0,0) 100%);
   }
-  .hero-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-pale); }
-  .hero h1 { font-size: 60px; font-weight: 300; letter-spacing: -0.015em; }
-  .hero h1 b { font-weight: 700; }
-  .hero p { max-width: 560px; margin: 22px auto 36px; font-size: 17.5px; font-weight: 300; color: rgba(255,255,255,0.88); }
-  .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  /* Every value below is the mockup's 1920px measurement expressed as a share of
+     the viewport, so the frame keeps its proportions at any width and lands
+     exactly on 1920x1080 at full size. Floors stop it collapsing on small screens. */
+  .hero-bar {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 28px clamp(24px, 2.5vw, 48px);
+    min-height: clamp(220px, 18.07vw, 460px);
+    padding: clamp(32px, 2.92vw, 56px) clamp(24px, 5vw, 96px) clamp(40px, 4.06vw, 78px);
+  }
+  /* Type sizes measured off the mockup: 47px cap height on the h1, 31px line
+     pitch on the paragraph, 165px label inside a 199x63 pill. */
+  .hero-bar h1 {
+    font-size: clamp(34px, 3.54vw, 68px); font-weight: 400; line-height: 1.04;
+    letter-spacing: 0; color: #111;
+    margin-bottom: 8px; /* lifts the cap line to match the rule/pill block */
+  }
+  .hero-right {
+    display: flex; align-items: center;
+    gap: 20px clamp(24px, 2.5vw, 48px); min-height: clamp(60px, 4.84vw, 93px);
+  }
+  .hero-right p {
+    font-size: clamp(17px, 1.33vw, 25.5px); line-height: 1.22; color: #222;
+    text-align: right; max-width: clamp(280px, 27.6vw, 530px);
+  }
+  .hero-rule { width: 2px; align-self: stretch; flex: 0 0 auto; background: #d5d5d5; }
+  .hero-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--green-pale); color: #0b2e20; font-weight: 400;
+    font-size: clamp(17px, 1.25vw, 24px); line-height: 1.13;
+    border-radius: var(--radius-pill); padding: 18px 17px;
+    min-width: clamp(150px, 10.36vw, 199px); white-space: nowrap;
+    transition: filter .12s ease;
+  }
+  .hero-btn:hover { filter: brightness(1.04); }
 
   /* ---------- Guiding principles ---------- */
   .principle-row {
@@ -132,33 +166,14 @@
   }
   .principle-row:last-child { border-bottom: none; }
   .principle-label { color: var(--green-brand); font-weight: 700; font-size: 19px; align-self: start; }
-  .principle-copy { font-size: 16.5px; color: #3a413d; max-width: 460px; }
-  .graphic {
-    height: 128px; border-radius: var(--radius-card); position: relative; overflow: hidden;
+  .principle-copy { font-size: 16.5px; color: #3a413d; max-width: 640px; }
+  .principles-vm { border-bottom: 1px solid var(--line); }
+  .vm-text { display: flex; flex-direction: column; }
+  .vm-row {
+    display: grid; grid-template-columns: 170px 1fr; gap: 40px;
+    padding: 44px 0; align-items: start;
   }
-  .graphic-vision {
-    background:
-      linear-gradient(90deg,
-        #d9efdd 0%, #d9efdd 12%,
-        #7fbf9a 12%, #35745a 26%,
-        #0c3d2b 26%, #4e9974 40%,
-        #a5d8b8 40%, #35745a 54%,
-        #0c3d2b 54%, #6db08d 68%,
-        #8cc7a3 68%, #1d5940 84%,
-        #d9efdd 84%, #0c3d2b 100%);
-  }
-  .graphic-mission {
-    background: linear-gradient(105deg, #c9e9cf 0%, #4e9974 45%, #0c3d2b 80%, #02271b 100%);
-  }
-  .graphic-mission::before {
-    content: ""; position: absolute; inset: 0;
-    background: repeating-linear-gradient(180deg, transparent 0 30px, rgba(255,255,255,0.28) 30px 31px);
-  }
-  .ph-tag {
-    position: absolute; right: 8px; bottom: 8px;
-    background: rgba(255,255,255,0.85); color: #7a5410; font-size: 10.5px; font-weight: 700;
-    letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px;
-  }
+  .vm-row + .vm-row { border-top: 1px solid var(--line); }
   .values-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 36px 56px;
   }
@@ -188,7 +203,6 @@
   }
   .team-detail h3 { font-size: 34px; font-weight: 500; margin: 10px 0 18px; }
   .team-detail .team-bio { font-size: 16.5px; color: #3a413d; max-width: 540px; line-height: 1.6; }
-  .team-note { font-size: 12.5px; color: #a09a8d; margin-top: 20px; }
   .team-tiles {
     display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
     border-top: 1px solid var(--line); padding-top: 40px;
@@ -324,15 +338,24 @@
   /* ---------- Responsive ---------- */
   @media (max-width: 900px) {
     .nav-links { display: none; }
-    .hero h1 { font-size: 42px; }
+    .hero-bar { flex-direction: column; align-items: flex-start; min-height: auto; padding: 40px 24px 48px; }
+    .hero-bar h1 { margin-bottom: 0; }
+    .hero-right { gap: 20px 28px; min-height: auto; }
+    .hero-right p { text-align: left; line-height: 1.5; max-width: 460px; }
+    .hero-btn { padding: 15px 26px; min-width: 0; }
     .principle-row { grid-template-columns: 1fr; gap: 18px; }
-    .graphic { max-width: 420px; }
+    .vm-row { grid-template-columns: 1fr; gap: 8px; padding: 28px 0; }
     .team-featured { grid-template-columns: 1fr; gap: 28px; }
     .team-photo { height: 240px; }
     .team-tiles { grid-template-columns: repeat(3, 1fr); }
     .values-grid { grid-template-columns: 1fr; }
     .footer-top { grid-template-columns: 1fr 1fr; }
     .role-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .hero-right { flex-direction: column; align-items: flex-start; }
+    .hero-rule { display: none; }
+    .hero-btn { padding: 14px 26px; min-width: 0; }
   }
 </style>
 </head>
@@ -397,10 +420,17 @@
 
 <!-- ======================= HERO ======================= -->
 <header class="hero">
-  <h1>Careers at <b>Loop</b></h1>
-  <p>Loop is enabling the next generation of businesses to thrive globally, and we're looking for ambitious people to join our mission.</p>
-  <div class="hero-ctas">
-    <a class="btn btn-primary" href="#roles">See open roles →</a>
+  <div class="hero-media">
+    <img src="assets/careers-hero-banner.jpg" alt="Loop team members working at desks and together over a laptop">
+    <div class="hero-scrim"></div>
+  </div>
+  <div class="hero-bar">
+    <h1>Careers at Loop</h1>
+    <div class="hero-right">
+      <p>Loop is enabling the next generation of businesses to thrive globally, and we're looking for ambitious people to join our mission</p>
+      <div class="hero-rule"></div>
+      <a class="hero-btn" href="#roles">See open roles</a>
+    </div>
   </div>
 </header>
 
@@ -409,16 +439,17 @@
   <div class="container">
     <h2 class="section-title">Our Guiding Principles</h2>
 
-    <div class="principle-row">
-      <div class="principle-label">Vision</div>
-      <p class="principle-copy">Loop will be the first business banking platform to enable businesses to manage their money globally by default.</p>
-      <div class="graphic graphic-vision"><span class="ph-tag">Placeholder graphic</span></div>
-    </div>
-
-    <div class="principle-row">
-      <div class="principle-label">Mission</div>
-      <p class="principle-copy">To help businesses seamlessly manage money around the world so they can access more markets, save money, and simplify their operations.</p>
-      <div class="graphic graphic-mission"><span class="ph-tag">Placeholder graphic</span></div>
+    <div class="principles-vm">
+      <div class="vm-text">
+        <div class="vm-row">
+          <div class="principle-label">Vision</div>
+          <p class="principle-copy">Loop will be the first business banking platform to enable businesses to manage their money globally by default.</p>
+        </div>
+        <div class="vm-row">
+          <div class="principle-label">Mission</div>
+          <p class="principle-copy">To help businesses seamlessly manage money around the world so they can access more markets, save money, and simplify their operations.</p>
+        </div>
+      </div>
     </div>
 
     <div class="principle-row" style="align-items:start">
@@ -446,7 +477,6 @@
         <div class="eyebrow" id="team-title">CEO &amp; Co-Founder</div>
         <h3 id="team-name">Cato Pastoll</h3>
         <p class="team-bio" id="team-bio">Cato Pastoll, CEO and co-founder of Loop, has spent over a decade pioneering financial solutions for Canadian businesses. With deep expertise across both tech and finance, he built Loop to empower businesses to grow globally, backed by better financial services to help them manage their global finances.</p>
-        <p class="team-note">Draft bios for review — verify with each leader before publishing.</p>
       </div>
     </div>
 
@@ -611,6 +641,19 @@
 </footer>
 
 <script>
+  /* ---------------- Hero CTA: jump straight to the roles list, no smooth scroll ---------------- */
+  document.querySelector('.hero-btn').addEventListener('click', e => {
+    const target = document.getElementById('roles');
+    if (!target) return;
+    e.preventDefault();
+    const root = document.documentElement;
+    const prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo(0, target.getBoundingClientRect().top + window.pageYOffset);
+    root.style.scrollBehavior = prev;
+    history.replaceState(null, '', '#roles');
+  });
+
   /* ---------------- Leadership (real names — titles to verify; bios are drafts) ---------------- */
   const TEAM = [
     { name: "Cato Pastoll", title: "CEO & Co-Founder", photo: "assets/team/Cato.jpg",
@@ -618,11 +661,11 @@
     { name: "Sarah Sheikh", title: "Chief of Staff", photo: "assets/team/Sarah.jpg",
       bio: "Sarah Sheikh is an operational leader with over 15 years of experience across fintech, banking, and higher education in Canada, the USA, and the UK — working across teams to drive growth, streamline operations, and scale businesses." },
     { name: "Yan Matagne", title: "Head of Engineering", photo: "assets/team/Yan.jpg",
-      bio: "Yan Matagne is an engineering leader passionate about making product processes smoother, customers happier, and engineering teams smarter. He loves taking complicated tech problems and making them work for real people, and building systems that make developers’ lives easier and customers smile more. When he’s not automating complex problems, you’ll find him sharing stories about what actually works in the real world of engineering leadership. Yan is the Head of Engineering at Loop Financial and has over 7 years of experience in the fintech industry in Canada." },
+      bio: "Yan is the Head of Engineering at Loop Financial, with over 7 years of experience in Canada’s FinTech industry. He’s passionate about making product processes smoother, engineering teams sharper, and customers happier, turning complex tech problems into solutions that work for real people. Outside of solving hard engineering problems, he enjoys sharing insights on what actually works in engineering leadership." },
     { name: "Dave McKenzie", title: "Head of Finance",
       bio: "Dave McKenzie is a finance leader who has spent almost his entire career in fintech. He views finance as a profit driver for the business and an enabler of scale. Having taken part in the fintech boom in Europe over the last 15 years, he joins Loop as the Canadian fintech scene accelerates." },
     { name: "James", title: "Head of Growth", photo: "assets/team/James.jpg",
-      bio: "James is the Head of Growth at Loop, with over a decade of experience leading go-to-market across brand, product, and growth marketing at early- and growth-stage technology companies in fintech, B2B SaaS, marketplaces, and consumer hardware. He has led marketing through two acquisitions and launched more than 10 products. His focus is on building marketing functions that are customer-informed, operationally sound, and aligned to business outcomes." },
+      bio: "James is the Head of Growth at Loop, with over a decade of experience leading go-to-market across brand, product, and growth marketing at early and growth-stage companies in fintech, B2B SaaS, marketplaces, and consumer hardware. He has led marketing through two acquisitions and launched more than 10 products, with a focus on building marketing functions that are customer-informed, operationally sound, and aligned to business outcomes." },
   ];
 
   const tilesEl = document.getElementById('team-tiles');
