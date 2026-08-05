@@ -122,19 +122,19 @@
     max-height: calc(100svh - var(--chrome, 0px));
   }
   .hero-media {
-    position: relative; width: 100%; aspect-ratio: 1920 / 733; overflow: hidden;
+    position: relative; width: 100%; aspect-ratio: 1920 / 735; overflow: hidden;
     flex: 0 1 auto; min-height: 0;
   }
   .hero-media img {
     position: absolute; inset: 0; width: 100%; height: 100%;
     object-fit: cover; object-position: 50% 0; display: block;
   }
-  /* The top of the photo is blurred in the asset itself; this scrim darkens that
-     band so the white nav clears 4.5:1 contrast over it. */
-  .hero-scrim {
-    position: absolute; top: 0; left: 0; right: 0; height: 36%;
-    background: linear-gradient(180deg,
-      rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.34) 34%, rgba(0,0,0,0.12) 68%, rgba(0,0,0,0) 100%);
+  /* Soft wash over the card grid — transparent at the centre, easing to #eee at
+     the edges (radial overlay from the Figma hero, 50% opacity). */
+  .hero-wash {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 135.4% 135.4% at 50% 45%,
+      rgba(255,255,255,0) 0%, rgba(238,238,238,0.5) 100%);
   }
   /* Every value below is the mockup's 1920px measurement expressed as a share of
      the viewport, so the frame keeps its proportions at any width and lands
@@ -256,6 +256,7 @@
   .faq-item .faq-body ol, .faq-item .faq-body ul { margin: 2px 0 0 20px; }
   .faq-item .faq-body li { margin-bottom: 9px; padding-left: 4px; }
   .faq-item .faq-body li::marker { color: var(--green-link); font-weight: 700; }
+  .faq-item .faq-body .faq-note { margin-top: 14px; }
 
   /* ---------- Roles ---------- */
   .roles-toolbar { display: flex; gap: 14px; margin: 44px 0 18px; flex-wrap: wrap; }
@@ -314,8 +315,7 @@
       linear-gradient(115deg, #8cc7a3 0%, #4e9974 38%, #1d5940 72%, #033d2b 100%);
   }
   .cta-band h2 { font-size: 44px; font-weight: 500; }
-  .cta-band p { max-width: 480px; margin: 20px auto 36px; font-size: 15.5px; color: rgba(255,255,255,0.92); }
-  .cta-band a.mail { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  .cta-band p { max-width: 538px; margin: 20px auto 36px; font-size: 15.5px; color: rgba(255,255,255,0.92); }
   .cta-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
   .btn-dark { background: var(--green-ink); color: #fff; }
   .btn-white { background: #fff; color: var(--green-brand); }
@@ -437,8 +437,8 @@
 <!-- ======================= HERO ======================= -->
 <header class="hero">
   <div class="hero-media">
-    <img src="assets/careers-hero-banner.jpg" alt="Loop team members working at desks and together over a laptop">
-    <div class="hero-scrim"></div>
+    <img src="assets/careers-hero-cards.jpg" alt="A tiled arrangement of green Loop Visa corporate cards">
+    <div class="hero-wash"></div>
   </div>
   <div class="hero-bar">
     <h1>Careers at Loop</h1>
@@ -518,10 +518,10 @@
         <summary><i class="chev"></i>How we hire</summary>
         <div class="faq-body">
           <ol>
-            <li>30-minute virtual meeting with a member of leadership</li>
+            <li>30-minute virtual meeting with Sarah Sheikh (Chief of Staff)</li>
             <li>60-minute in-person meeting with the hiring team</li>
-            <li>Take-home questionnaire</li>
-            <li>30-minute in-person meeting with senior leadership, followed by a 15-minute wrap-up</li>
+            <li>Take-home assignment</li>
+            <li>60-minute in-person meeting with Cato Pastoll (CEO) and Sarah Sheikh (Chief of Staff).</li>
             <li>Background check and offer</li>
           </ol>
         </div>
@@ -530,17 +530,17 @@
         <summary><i class="chev"></i>What we offer</summary>
         <div class="faq-body">
           <ul>
-            <li>Equity ranging from 0.01–0.05%</li>
-            <li>3 weeks vacation</li>
-            <li>Enrolment in the group health benefits plan after your probation period</li>
+            <li>3 weeks vacation*</li>
+            <li>Enrolment in the group health benefits plan after your probation period*</li>
             <li>Catered lunch every Friday</li>
             <li>A kitchen full of snacks and drinks to keep you going throughout the day</li>
           </ul>
+          <p class="faq-note">* For full-time employees only</p>
         </div>
       </details>
       <details class="faq-item">
         <summary><i class="chev"></i>Our culture</summary>
-        <div class="faq-body">Loop is an in-person company because we truly believe the best ideas happen when we're side by side. We're headquartered and built in Toronto, with our teams together in the office — small teams with real ownership over what they ship, who come prepared, decide quickly, and act without waiting for perfect answers.</div>
+        <div class="faq-body">At Loop, we believe the best ideas happen when we’re in the same room, bouncing ideas off one another and making things happen in real time. Headquartered and built right here in Toronto, our culture thrives on in-person collaboration. We don't do endless meetings or wait for perfect answers. We come prepared, make fast decisions, and ship work that matters. If you’re energized by autonomy, quick execution, and solving tough problems alongside a talented team, you’ll fit right in. Bonus: we are pet friendly, too!</div>
       </details>
     </div>
   </div>
@@ -575,7 +575,7 @@
 <!-- ======================= STAY IN THE LOOP ======================= -->
 <section class="cta-band">
   <h2>Stay in the Loop</h2>
-  <p>If nothing is the right fit right now, reach out anyway. Send your resume to <a class="mail" href="mailto:careers@bankonloop.com">careers@bankonloop.com</a> with a brief introduction of yourself and the roles that excite you the most.</p>
+  <p>If nothing is the right fit right now, reach out anyway. Email us your resume with a brief self-introduction and the roles that excite you the most.</p>
   <div class="cta-ctas">
     <a class="btn btn-dark" href="https://www.linkedin.com/company/loop-financial/" target="_blank" rel="noopener">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.27c-.97 0-1.75-.79-1.75-1.76s.78-1.75 1.75-1.75 1.75.78 1.75 1.75-.78 1.76-1.75 1.76zm13.5 12.27h-3v-5.6c0-3.37-4-3.11-4 0v5.6h-3v-11h3v1.77c1.4-2.59 7-2.78 7 2.47v6.76z"/></svg>
@@ -689,7 +689,7 @@
       bio: "Sarah Sheikh is an operational leader with over 15 years of experience across fintech, banking, and higher education in Canada, the USA, and the UK — working across teams to drive growth, streamline operations, and scale businesses." },
     { name: "Yan Matagne", title: "Head of Engineering", photo: "assets/team/Yan.jpg",
       bio: "Yan is the Head of Engineering at Loop Financial, with over 7 years of experience in Canada’s FinTech industry. He’s passionate about making product processes smoother, engineering teams sharper, and customers happier, turning complex tech problems into solutions that work for real people. Outside of solving hard engineering problems, he enjoys sharing insights on what actually works in engineering leadership." },
-    { name: "Dave McKenzie", title: "Head of Finance",
+    { name: "Dave McKenzie", title: "Head of Finance", photo: "assets/team/Dave.jpg",
       bio: "Dave McKenzie is a finance leader who has spent almost his entire career in fintech. He views finance as a profit driver for the business and an enabler of scale. Having taken part in the fintech boom in Europe over the last 15 years, he joins Loop as the Canadian fintech scene accelerates." },
     { name: "James", title: "Head of Growth", photo: "assets/team/James.jpg",
       bio: "James is the Head of Growth at Loop, with over a decade of experience leading go-to-market across brand, product, and growth marketing at early and growth-stage companies in fintech, B2B SaaS, marketplaces, and consumer hardware. He has led marketing through two acquisitions and launched more than 10 products, with a focus on building marketing functions that are customer-informed, operationally sound, and aligned to business outcomes." },
