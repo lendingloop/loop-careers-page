@@ -69,9 +69,9 @@
   .ed-main { min-width: 0; }
 
   /* ---------- Nav ---------- */
-  /* Dark green bar so the white nav reads: the split hero sits below it rather
-     than running underneath a transparent nav. */
-  .nav-wrap { background: var(--green-ink); position: relative; z-index: 50; }
+  /* Transparent: the nav sits over the hero band, which carries a baked
+     darkening ramp at its top edge so the white nav still reads. */
+  .nav-wrap { background: transparent; position: relative; z-index: 50; }
   .nav {
     max-width: 1200px; margin: 0 auto; padding: 0 24px;
     display: flex; align-items: center; gap: 8px; height: 64px;
@@ -118,19 +118,22 @@
   .btn-ghost:hover { border-color: #fff; }
 
   /* ---------- Hero ----------
-     Split composition: text on a white panel at left, card imagery at right.
-     The nav sits on its own dark bar above rather than over the artwork. */
+     Photo band on top, white text frame beneath, sized off the 1920x1080 mockup.
+     If the natural proportions would overflow, the photo band gives up the
+     height (it crops from the bottom) and the text frame is never touched. */
   .hero {
-    position: relative; background: #fff;
-    display: grid; grid-template-columns: 1fr 1fr;
-    min-height: clamp(440px, 40vw, 640px);
-    max-height: calc(100vh - 64px);
-    max-height: calc(100svh - 64px);
+    position: relative; background: #fff; margin-top: -64px;
+    display: flex; flex-direction: column;
+    max-height: 100vh;
+    max-height: 100svh;
   }
-  .hero-media { position: relative; overflow: hidden; }
+  .hero-media {
+    position: relative; width: 100%; aspect-ratio: 1920 / 735; overflow: hidden;
+    flex: 0 1 auto; min-height: 0;
+  }
   .hero-media img {
     position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; object-position: 50% 50%; display: block;
+    object-fit: cover; object-position: 50% 0; display: block;
   }
   /* Soft wash over the card grid — transparent at the centre, easing to #eee at
      the edges (radial overlay from the Figma hero, 50% opacity). */
@@ -139,25 +142,33 @@
     background: radial-gradient(ellipse 135.4% 135.4% at 50% 45%,
       rgba(255,255,255,0) 0%, rgba(238,238,238,0.5) 100%);
   }
+  /* Every value below is the mockup's 1920px measurement expressed as a share of
+     the viewport, so the frame keeps its proportions at any width and lands
+     exactly on 1920x1080 at full size. Floors stop it collapsing on small screens. */
   .hero-bar {
-    display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
-    gap: clamp(20px, 2vw, 30px);
-    padding: clamp(40px, 4vw, 76px) clamp(24px, 4.6vw, 88px);
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex: 0 0 auto;
+    gap: 28px clamp(24px, 2.5vw, 48px);
+    min-height: clamp(220px, 18.07vw, 460px);
+    padding: clamp(32px, 2.92vw, 56px) clamp(24px, 5vw, 96px) clamp(40px, 4.06vw, 78px);
   }
+  /* Type sizes measured off the mockup: 47px cap height on the h1, 31px line
+     pitch on the paragraph, 165px label inside a 199x63 pill. Medium weight,
+     matching the section headers; the size gap carries the hierarchy. */
   .hero-bar h1 {
-    font-size: clamp(34px, 3.4vw, 60px); font-weight: 400; line-height: 1.04;
+    font-size: clamp(34px, 3.54vw, 68px); font-weight: 500; line-height: 1.04;
     letter-spacing: 0; color: #111;
+    margin-bottom: 8px; /* lifts the cap line to match the rule/pill block */
   }
   .hero-right {
-    display: flex; flex-direction: column; align-items: flex-start;
-    gap: clamp(20px, 2vw, 30px);
+    display: flex; align-items: center;
+    gap: 20px clamp(24px, 2.5vw, 48px); min-height: clamp(60px, 4.84vw, 93px);
   }
   .hero-right p {
-    font-size: clamp(16px, 1.15vw, 20px); line-height: 1.5; color: #222;
-    text-align: left; max-width: 460px;
+    font-size: clamp(17px, 1.33vw, 25.5px); line-height: 1.22; color: #222;
+    text-align: right; max-width: clamp(280px, 27.6vw, 530px);
   }
-  /* The divider turns horizontal in the stacked layout. */
-  .hero-rule { width: 64px; height: 2px; flex: 0 0 auto; background: #d5d5d5; }
+  .hero-rule { width: 2px; align-self: stretch; flex: 0 0 auto; background: #d5d5d5; }
   .hero-btn {
     display: inline-flex; align-items: center; justify-content: center;
     background: var(--green-pale); color: #0b2e20; font-weight: 400;
@@ -244,7 +255,7 @@
   .tile.active .t-name { color: var(--green-brand); }
   .tile .t-title { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-  /* ---------- Hear from the team ---------- */
+  /* ---------- Hear from the Team ---------- */
   .media { background: var(--cream); }
   .media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 40px; }
   .media-card { display: block; color: inherit; }
@@ -362,9 +373,15 @@
   }
   .cta-inner {
     display: grid; grid-template-columns: 1.05fr 0.95fr;
-    gap: clamp(28px, 5vw, 80px); align-items: end;
+    gap: clamp(28px, 5vw, 80px); align-items: start;
   }
-  .cta-band h2 { font-size: clamp(40px, 4.6vw, 64px); font-weight: 500; line-height: 1.04; }
+  /* Optical top alignment with the blurb beside it: the box tops already match,
+     but the heading's ascent-above-cap gap scales with its font size while the
+     15.5px paragraph's does not, so the cap line is pulled back by the difference. */
+  .cta-band h2 {
+    font-size: clamp(40px, 4.6vw, 64px); font-weight: 500; line-height: 1.04;
+    margin-top: calc(9px - 0.22em);
+  }
   .cta-band p { max-width: 460px; margin: 0 0 28px; font-size: 15.5px; color: rgba(255,255,255,0.92); }
   .cta-ctas { display: flex; gap: 14px; justify-content: flex-start; flex-wrap: wrap; }
   .btn-dark { background: var(--green-ink); color: #fff; }
@@ -408,10 +425,10 @@
     .ed-rail { position: static; }
     .ed-rail .section-title::after { margin-top: 16px; }
     .cta-inner { grid-template-columns: 1fr; align-items: start; }
-    /* Split hero stacks: text first, then the card imagery. */
-    .hero { grid-template-columns: 1fr; min-height: 0; max-height: none; }
-    .hero-bar { padding: 44px 24px 40px; gap: 22px; }
-    .hero-media { aspect-ratio: 3 / 2; max-height: 340px; }
+    .hero-bar { flex-direction: column; align-items: flex-start; min-height: auto; padding: 40px 24px 48px; }
+    .hero-bar h1 { margin-bottom: 0; }
+    .hero-right { gap: 20px 28px; min-height: auto; }
+    .hero-right p { text-align: left; line-height: 1.5; max-width: 460px; }
     .hero-btn { padding: 15px 26px; min-width: 0; }
     .principle-row { grid-template-columns: 1fr; gap: 18px; }
     .vm-row { grid-template-columns: 1fr; gap: 8px; padding: 28px 0; }
@@ -487,6 +504,10 @@
 
 <!-- ======================= HERO ======================= -->
 <header class="hero">
+  <div class="hero-media">
+    <img src="assets/careers-hero-cards.jpg" alt="A tiled arrangement of green Loop Visa corporate cards">
+    <div class="hero-wash"></div>
+  </div>
   <div class="hero-bar">
     <h1>Careers at Loop</h1>
     <div class="hero-right">
@@ -494,10 +515,6 @@
       <div class="hero-rule"></div>
       <a class="hero-btn" href="#roles">See open roles</a>
     </div>
-  </div>
-  <div class="hero-media">
-    <img src="assets/careers-hero-cards-tall.jpg" alt="A tiled arrangement of green Loop Visa corporate cards">
-    <div class="hero-wash"></div>
   </div>
 </header>
 
@@ -561,7 +578,7 @@
 <!-- ======================= HEAR FROM THE TEAM ======================= -->
 <section class="section media">
   <div class="container-wide editorial">
-    <div class="ed-rail"><h2 class="section-title">Hear from the team</h2></div>
+    <div class="ed-rail"><h2 class="section-title">Hear from the Team</h2></div>
     <div class="ed-main">
     <div class="media-grid">
       <a class="media-card" href="https://youtu.be/3b08JzpBEzg" target="_blank" rel="noopener">
