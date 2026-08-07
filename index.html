@@ -48,10 +48,30 @@
   .section-title { font-size: 40px; font-weight: 500; margin-bottom: 10px; }
   .section-sub { color: var(--muted); font-size: 16px; max-width: 520px; }
 
+  /* ---------- Editorial grid ----------
+     Breaks the single centred column: a sticky left rail carries the section
+     title while the content column runs wider and offset to the right. */
+  .container-wide { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+  .editorial {
+    display: grid;
+    grid-template-columns: minmax(190px, 300px) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 96px);
+    align-items: start;
+  }
+  .ed-rail { position: sticky; top: 88px; align-self: start; }
+  .ed-rail .section-title {
+    font-size: clamp(30px, 3.1vw, 48px); line-height: 1.06; margin-bottom: 0;
+  }
+  .ed-rail .section-title::after {
+    content: ""; display: block; width: 46px; height: 3px; border-radius: 2px;
+    background: var(--green-brand); margin-top: 22px;
+  }
+  .ed-main { min-width: 0; }
+
   /* ---------- Nav ---------- */
-  /* Transparent and in normal flow, matching the live site: the hero pulls up
-     underneath it so the photo runs to the top of the page. */
-  .nav-wrap { background: transparent; position: relative; z-index: 50; }
+  /* Dark green bar so the white nav reads: the split hero sits below it rather
+     than running underneath a transparent nav. */
+  .nav-wrap { background: var(--green-ink); position: relative; z-index: 50; }
   .nav {
     max-width: 1200px; margin: 0 auto; padding: 0 24px;
     display: flex; align-items: center; gap: 8px; height: 64px;
@@ -98,24 +118,19 @@
   .btn-ghost:hover { border-color: #fff; }
 
   /* ---------- Hero ----------
-     1920 x 1080 at desktop: a 733px photo band + a 347px white frame.
-     Both scale fluidly; the band keeps its aspect ratio at every width. */
-  /* The whole hero — photo band plus text frame — always fits the viewport.
-     If the natural 1920x1080 proportions would overflow, the photo band gives
-     up the height (it crops from the bottom) and the text frame is never touched. */
+     Split composition: text on a white panel at left, card imagery at right.
+     The nav sits on its own dark bar above rather than over the artwork. */
   .hero {
-    position: relative; background: #fff; margin-top: -64px;
-    display: flex; flex-direction: column;
-    max-height: 100vh;
-    max-height: 100svh;
+    position: relative; background: #fff;
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: clamp(440px, 40vw, 640px);
+    max-height: calc(100vh - 64px);
+    max-height: calc(100svh - 64px);
   }
-  .hero-media {
-    position: relative; width: 100%; aspect-ratio: 1920 / 735; overflow: hidden;
-    flex: 0 1 auto; min-height: 0;
-  }
+  .hero-media { position: relative; overflow: hidden; }
   .hero-media img {
     position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; object-position: 50% 0; display: block;
+    object-fit: cover; object-position: 50% 50%; display: block;
   }
   /* Soft wash over the card grid — transparent at the centre, easing to #eee at
      the edges (radial overlay from the Figma hero, 50% opacity). */
@@ -124,32 +139,25 @@
     background: radial-gradient(ellipse 135.4% 135.4% at 50% 45%,
       rgba(255,255,255,0) 0%, rgba(238,238,238,0.5) 100%);
   }
-  /* Every value below is the mockup's 1920px measurement expressed as a share of
-     the viewport, so the frame keeps its proportions at any width and lands
-     exactly on 1920x1080 at full size. Floors stop it collapsing on small screens. */
   .hero-bar {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    flex: 0 0 auto;
-    gap: 28px clamp(24px, 2.5vw, 48px);
-    min-height: clamp(220px, 18.07vw, 460px);
-    padding: clamp(32px, 2.92vw, 56px) clamp(24px, 5vw, 96px) clamp(40px, 4.06vw, 78px);
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+    gap: clamp(20px, 2vw, 30px);
+    padding: clamp(40px, 4vw, 76px) clamp(24px, 4.6vw, 88px);
   }
-  /* Type sizes measured off the mockup: 47px cap height on the h1, 31px line
-     pitch on the paragraph, 165px label inside a 199x63 pill. */
   .hero-bar h1 {
-    font-size: clamp(34px, 3.54vw, 68px); font-weight: 400; line-height: 1.04;
+    font-size: clamp(34px, 3.4vw, 60px); font-weight: 400; line-height: 1.04;
     letter-spacing: 0; color: #111;
-    margin-bottom: 8px; /* lifts the cap line to match the rule/pill block */
   }
   .hero-right {
-    display: flex; align-items: center;
-    gap: 20px clamp(24px, 2.5vw, 48px); min-height: clamp(60px, 4.84vw, 93px);
+    display: flex; flex-direction: column; align-items: flex-start;
+    gap: clamp(20px, 2vw, 30px);
   }
   .hero-right p {
-    font-size: clamp(17px, 1.33vw, 25.5px); line-height: 1.22; color: #222;
-    text-align: right; max-width: clamp(280px, 27.6vw, 530px);
+    font-size: clamp(16px, 1.15vw, 20px); line-height: 1.5; color: #222;
+    text-align: left; max-width: 460px;
   }
-  .hero-rule { width: 2px; align-self: stretch; flex: 0 0 auto; background: #d5d5d5; }
+  /* The divider turns horizontal in the stacked layout. */
+  .hero-rule { width: 64px; height: 2px; flex: 0 0 auto; background: #d5d5d5; }
   .hero-btn {
     display: inline-flex; align-items: center; justify-content: center;
     background: var(--green-pale); color: #0b2e20; font-weight: 400;
@@ -258,7 +266,6 @@
   }
   .media-title { font-size: 18.5px; font-weight: 500; color: var(--ink); margin-top: 6px; line-height: 1.35; }
   .media-card:hover .media-title { color: var(--green-brand); }
-  .media-people { font-size: 14px; color: var(--muted); margin-top: 6px; }
   .media-subhead {
     font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
     color: #3a413d; margin-top: 56px; padding-bottom: 12px; border-bottom: 1px solid var(--line);
@@ -346,16 +353,20 @@
 
   /* ---------- Stay in the Loop ---------- */
   .cta-band {
-    color: #fff; text-align: center; padding: 110px 24px;
+    color: #fff; text-align: left; padding: clamp(76px, 9vw, 120px) 0;
     background:
       radial-gradient(120% 180% at 8% 110%, rgba(210,243,167,0.32) 0%, transparent 45%),
       radial-gradient(140% 200% at 100% -30%, #0a5c40 0%, transparent 55%),
       radial-gradient(90% 140% at 85% 115%, #02271b 0%, transparent 60%),
       linear-gradient(115deg, #8cc7a3 0%, #4e9974 38%, #1d5940 72%, #033d2b 100%);
   }
-  .cta-band h2 { font-size: 44px; font-weight: 500; }
-  .cta-band p { max-width: 538px; margin: 20px auto 36px; font-size: 15.5px; color: rgba(255,255,255,0.92); }
-  .cta-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .cta-inner {
+    display: grid; grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(28px, 5vw, 80px); align-items: end;
+  }
+  .cta-band h2 { font-size: clamp(40px, 4.6vw, 64px); font-weight: 500; line-height: 1.04; }
+  .cta-band p { max-width: 460px; margin: 0 0 28px; font-size: 15.5px; color: rgba(255,255,255,0.92); }
+  .cta-ctas { display: flex; gap: 14px; justify-content: flex-start; flex-wrap: wrap; }
   .btn-dark { background: var(--green-ink); color: #fff; }
   .btn-white { background: #fff; color: var(--green-brand); }
 
@@ -393,10 +404,14 @@
   /* ---------- Responsive ---------- */
   @media (max-width: 900px) {
     .nav-links { display: none; }
-    .hero-bar { flex-direction: column; align-items: flex-start; min-height: auto; padding: 40px 24px 48px; }
-    .hero-bar h1 { margin-bottom: 0; }
-    .hero-right { gap: 20px 28px; min-height: auto; }
-    .hero-right p { text-align: left; line-height: 1.5; max-width: 460px; }
+    .editorial { grid-template-columns: 1fr; gap: 22px; }
+    .ed-rail { position: static; }
+    .ed-rail .section-title::after { margin-top: 16px; }
+    .cta-inner { grid-template-columns: 1fr; align-items: start; }
+    /* Split hero stacks: text first, then the card imagery. */
+    .hero { grid-template-columns: 1fr; min-height: 0; max-height: none; }
+    .hero-bar { padding: 44px 24px 40px; gap: 22px; }
+    .hero-media { aspect-ratio: 3 / 2; max-height: 340px; }
     .hero-btn { padding: 15px 26px; min-width: 0; }
     .principle-row { grid-template-columns: 1fr; gap: 18px; }
     .vm-row { grid-template-columns: 1fr; gap: 8px; padding: 28px 0; }
@@ -472,10 +487,6 @@
 
 <!-- ======================= HERO ======================= -->
 <header class="hero">
-  <div class="hero-media">
-    <img src="assets/careers-hero-cards.jpg" alt="A tiled arrangement of green Loop Visa corporate cards">
-    <div class="hero-wash"></div>
-  </div>
   <div class="hero-bar">
     <h1>Careers at Loop</h1>
     <div class="hero-right">
@@ -484,12 +495,17 @@
       <a class="hero-btn" href="#roles">See open roles</a>
     </div>
   </div>
+  <div class="hero-media">
+    <img src="assets/careers-hero-cards-tall.jpg" alt="A tiled arrangement of green Loop Visa corporate cards">
+    <div class="hero-wash"></div>
+  </div>
 </header>
 
 <!-- ======================= GUIDING PRINCIPLES ======================= -->
 <section class="section principles">
-  <div class="container">
-    <h2 class="section-title">Our Guiding Principles</h2>
+  <div class="container-wide editorial">
+    <div class="ed-rail"><h2 class="section-title">Our Guiding Principles</h2></div>
+    <div class="ed-main">
 
     <div class="principles-vm">
       <div class="vm-text">
@@ -515,13 +531,15 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
 <!-- ======================= LEADERSHIP ======================= -->
 <section class="section team" id="team">
-  <div class="container">
-    <h2 class="section-title">Meet the Leadership Team</h2>
+  <div class="container-wide editorial">
+    <div class="ed-rail"><h2 class="section-title">Meet the Leadership Team</h2></div>
+    <div class="ed-main">
 
     <div class="team-featured">
       <div class="team-photo" id="team-photo"><img src="assets/team/Cato.jpg" alt="Cato Pastoll"></div>
@@ -536,13 +554,15 @@
     </div>
 
     <div class="team-tiles" id="team-tiles"></div>
+    </div>
   </div>
 </section>
 
 <!-- ======================= HEAR FROM THE TEAM ======================= -->
 <section class="section media">
-  <div class="container">
-    <h2 class="section-title">Hear from the team</h2>
+  <div class="container-wide editorial">
+    <div class="ed-rail"><h2 class="section-title">Hear from the team</h2></div>
+    <div class="ed-main">
     <div class="media-grid">
       <a class="media-card" href="https://youtu.be/3b08JzpBEzg" target="_blank" rel="noopener">
         <div class="media-thumb">
@@ -551,7 +571,6 @@
         </div>
         <div class="media-kicker">Podcast · Looks Good on Paper</div>
         <h3 class="media-title">Stop Hiring for Titles: What Startup Hiring Actually Requires</h3>
-        <p class="media-people">Sarah Sheikh, Chief of Staff</p>
       </a>
       <a class="media-card" href="https://www.youtube.com/watch?v=zFFiyF59DNI&amp;t=29" target="_blank" rel="noopener">
         <div class="media-thumb">
@@ -560,7 +579,6 @@
         </div>
         <div class="media-kicker">Podcast · StartWell</div>
         <h3 class="media-title">You Can’t Start a Bank in Canada. So He Built the Next Best Thing.</h3>
-        <p class="media-people">Cato Pastoll, CEO &amp; Co-Founder</p>
       </a>
     </div>
 
@@ -572,13 +590,15 @@
       <li><a href="https://www.linkedin.com/posts/cpastoll_why-are-we-building-loop-financial-banking-activity-7360648829089574912-vc8d/" target="_blank" rel="noopener"><span class="news-text"><span class="news-src">LinkedIn</span><span class="news-title">Cato on why we’re building Loop</span></span><span class="news-arrow"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5h11M8.5 1.5 12 5l-3.5 3.5"/></svg></span></a></li>
       <li><a href="https://www.linkedin.com/posts/cpastoll_accountants-and-finance-teams-in-canada-have-activity-7435335245165576192-4sZB/" target="_blank" rel="noopener"><span class="news-text"><span class="news-src">LinkedIn</span><span class="news-title">Cato on what accountants and finance teams in Canada need</span></span><span class="news-arrow"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5h11M8.5 1.5 12 5l-3.5 3.5"/></svg></span></a></li>
     </ul>
+    </div>
   </div>
 </section>
 
 <!-- ======================= FAQ ======================= -->
 <section class="section">
-  <div class="container">
-    <h2 class="section-title">Frequently Asked Questions</h2>
+  <div class="container-wide editorial">
+    <div class="ed-rail"><h2 class="section-title">Frequently Asked Questions</h2></div>
+    <div class="ed-main">
 
     <div class="faq-list">
       <details class="faq-item" open>
@@ -626,13 +646,15 @@
         </div>
       </details>
     </div>
+    </div>
   </div>
 </section>
 
 <!-- ======================= ROLES ======================= -->
-<section class="section" id="roles" style="padding-top: 64px;">
-  <div class="container">
-    <h2 class="section-title">Find your role at Loop</h2>
+<section class="section" id="roles" style="padding-top: 64px; background: var(--cream);">
+  <div class="container-wide editorial">
+    <div class="ed-rail"><h2 class="section-title">Find your role at Loop</h2></div>
+    <div class="ed-main">
 
     <div class="roles-toolbar">
       <div class="search-box">
@@ -652,12 +674,15 @@
     <div class="roles-empty" id="roles-empty">
       No roles match your filters. <a href="#roles" id="roles-clear">Clear filters</a>.
     </div>
+    </div>
   </div>
 </section>
 
 <!-- ======================= STAY IN THE LOOP ======================= -->
 <section class="cta-band">
+  <div class="container-wide cta-inner">
   <h2>Stay in the Loop</h2>
+  <div class="cta-body">
   <p>If nothing is the right fit right now, reach out anyway. Email us your resume with a brief self-introduction and the roles that excite you the most.</p>
   <div class="cta-ctas">
     <a class="btn btn-dark" href="https://www.linkedin.com/company/loop-financial/" target="_blank" rel="noopener">
@@ -665,6 +690,8 @@
       Follow Loop on LinkedIn
     </a>
     <a class="btn btn-white" href="mailto:careers@bankonloop.com?subject=Introduction%20%E2%80%94%20Loop%20Careers">Email us your resume</a>
+  </div>
+  </div>
   </div>
 </section>
 
