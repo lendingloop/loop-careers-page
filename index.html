@@ -24,7 +24,7 @@
     --lime: #d2f3a7;
     --cream: #f9f8f4;
     --ink: #222;
-    --muted: #6b7570;
+    --muted: #69736e;      /* 1 notch darker than #6b7570 so it clears 4.5:1 on --cream */
     --line: #e6e4dd;
     --radius-pill: 100px;
     --radius-card: 12px;
@@ -47,17 +47,6 @@
   .section { padding: 96px 0; }
   .section-title { font-size: 40px; font-weight: 500; margin-bottom: 10px; }
   .section-sub { color: var(--muted); font-size: 16px; max-width: 520px; }
-
-  /* ---------- Review ribbon ---------- */
-  .ribbon {
-    background: #fdf3df; color: #7a5410; font-size: 13px;
-    text-align: center; padding: 8px 44px; position: relative;
-  }
-  .ribbon b { font-weight: 700; }
-  .ribbon button {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; font-size: 16px; color: #7a5410; cursor: pointer; line-height: 1;
-  }
 
   /* ---------- Nav ---------- */
   /* Transparent and in normal flow, matching the live site: the hero pulls up
@@ -113,13 +102,12 @@
      Both scale fluidly; the band keeps its aspect ratio at every width. */
   /* The whole hero — photo band plus text frame — always fits the viewport.
      If the natural 1920x1080 proportions would overflow, the photo band gives
-     up the height (it crops from the bottom, keeping the blurred nav band) and
-     the text frame is never touched. --chrome is the review ribbon's height. */
+     up the height (it crops from the bottom) and the text frame is never touched. */
   .hero {
     position: relative; background: #fff; margin-top: -64px;
     display: flex; flex-direction: column;
-    max-height: calc(100vh - var(--chrome, 0px));
-    max-height: calc(100svh - var(--chrome, 0px));
+    max-height: 100vh;
+    max-height: 100svh;
   }
   .hero-media {
     position: relative; width: 100%; aspect-ratio: 1920 / 735; overflow: hidden;
@@ -219,6 +207,16 @@
   }
   .team-detail h3 { font-size: 34px; font-weight: 500; margin: 10px 0 18px; }
   .team-detail .team-bio { font-size: 16.5px; color: #3a413d; max-width: 540px; line-height: 1.6; }
+  /* Column matches the 330px headshot so the LinkedIn icon can sit on its baseline. */
+  .team-detail { display: flex; flex-direction: column; min-height: 330px; }
+  .team-linkedin {
+    display: inline-flex; align-items: center; align-self: flex-start;
+    margin-top: auto; padding-top: 20px;
+    color: #8b9490;   /* lightest grey that still clears 3:1 on white for a control */
+    transition: color .12s ease;
+  }
+  .team-linkedin:hover { color: var(--green-ink); }
+  .team-linkedin svg { flex: 0 0 auto; display: block; width: 26px; height: 26px; }
   .team-tiles {
     display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
     border-top: 1px solid var(--line); padding-top: 40px;
@@ -238,6 +236,45 @@
   .tile.active .t-name { color: var(--green-brand); }
   .tile .t-title { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
+  /* ---------- Hear from the team ---------- */
+  .media { background: var(--cream); }
+  .media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 40px; }
+  .media-card { display: block; color: inherit; }
+  .media-thumb {
+    position: relative; aspect-ratio: 16 / 9; overflow: hidden;
+    border-radius: var(--radius-card); background: var(--green-tint);
+  }
+  .media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
+  .media-card:hover .media-thumb img { transform: scale(1.03); }
+  .media-play {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 56px; height: 56px; border-radius: 50%; background: rgba(3,61,43,0.82);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .media-play svg { margin-left: 3px; }
+  .media-kicker {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--green-link); margin-top: 16px;
+  }
+  .media-title { font-size: 18.5px; font-weight: 500; color: var(--ink); margin-top: 6px; line-height: 1.35; }
+  .media-card:hover .media-title { color: var(--green-brand); }
+  .media-people { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  .media-subhead {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #3a413d; margin-top: 56px; padding-bottom: 12px; border-bottom: 1px solid var(--line);
+  }
+  .news-list { list-style: none; }
+  .news-list li { border-bottom: 1px solid var(--line); }
+  .news-list a {
+    display: flex; align-items: center; gap: 16px; padding: 16px 4px;
+    color: var(--ink); font-size: 16.5px;
+  }
+  .news-list a:hover { color: var(--green-brand); }
+  .news-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .news-src { font-size: 12.5px; font-weight: 700; color: var(--green-link); }
+  .news-title { line-height: 1.35; }
+  .news-arrow { margin-left: auto; flex: 0 0 auto; display: inline-flex; color: var(--green-brand); }
+
   /* ---------- FAQ ---------- */
   .faq-list { margin-top: 48px; border-bottom: 1px solid var(--line); }
   .faq-item { border-top: 1px solid var(--line); }
@@ -256,6 +293,8 @@
   .faq-item .faq-body ol, .faq-item .faq-body ul { margin: 2px 0 0 20px; }
   .faq-item .faq-body li { margin-bottom: 9px; padding-left: 4px; }
   .faq-item .faq-body li::marker { color: var(--green-link); font-weight: 700; }
+  .faq-item .faq-body p + p { margin-top: 14px; }
+  .faq-item .faq-body ul { margin-top: 12px; }
   .faq-item .faq-body .faq-note { margin-top: 14px; }
 
   /* ---------- Roles ---------- */
@@ -361,8 +400,11 @@
     .hero-btn { padding: 15px 26px; min-width: 0; }
     .principle-row { grid-template-columns: 1fr; gap: 18px; }
     .vm-row { grid-template-columns: 1fr; gap: 8px; padding: 28px 0; }
+    .media-grid { grid-template-columns: 1fr; gap: 32px; }
+    .news-arrow { display: none; }
     .team-featured { grid-template-columns: 1fr; gap: 28px; }
     .team-photo { height: 240px; }
+    .team-detail { min-height: 0; }
     .team-tiles { grid-template-columns: repeat(3, 1fr); }
     .values-grid { grid-template-columns: 1fr; }
     .footer-top { grid-template-columns: 1fr 1fr; }
@@ -376,12 +418,6 @@
 </style>
 </head>
 <body>
-
-<!-- Review ribbon -->
-<div class="ribbon" id="ribbon">
-  <b>Prototype for internal review</b> — final build happens in Webflow. Roles, leader bios and some section copy are placeholders (see README).
-  <button aria-label="Dismiss" onclick="document.getElementById('ribbon').remove(); syncChrome();">&times;</button>
-</div>
 
 <!-- ======================= NAV (real-site clone) ======================= -->
 <div class="nav-wrap">
@@ -493,10 +529,49 @@
         <div class="eyebrow" id="team-title">CEO &amp; Co-Founder</div>
         <h3 id="team-name">Cato Pastoll</h3>
         <p class="team-bio" id="team-bio">Cato Pastoll, CEO and co-founder of Loop, has spent over a decade pioneering financial solutions for Canadian businesses. With deep expertise across both tech and finance, he built Loop to empower businesses to grow globally, backed by better financial services to help them manage their global finances.</p>
+        <a class="team-linkedin" id="team-linkedin" href="https://www.linkedin.com/in/cpastoll/" target="_blank" rel="noopener" aria-label="Cato Pastoll on LinkedIn">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.27c-.97 0-1.75-.79-1.75-1.76s.78-1.75 1.75-1.75 1.75.78 1.75 1.75-.78 1.76-1.75 1.76zm13.5 12.27h-3v-5.6c0-3.37-4-3.11-4 0v5.6h-3v-11h3v1.77c1.4-2.59 7-2.78 7 2.47v6.76z"/></svg>
+        </a>
       </div>
     </div>
 
     <div class="team-tiles" id="team-tiles"></div>
+  </div>
+</section>
+
+<!-- ======================= HEAR FROM THE TEAM ======================= -->
+<section class="section media">
+  <div class="container">
+    <h2 class="section-title">Hear from the team</h2>
+    <div class="media-grid">
+      <a class="media-card" href="https://youtu.be/3b08JzpBEzg" target="_blank" rel="noopener">
+        <div class="media-thumb">
+          <img src="assets/media/stop-hiring-for-titles.jpg" alt="">
+          <span class="media-play"><svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M5.5 3.4v11.2L15 9 5.5 3.4Z"/></svg></span>
+        </div>
+        <div class="media-kicker">Podcast · Looks Good on Paper</div>
+        <h3 class="media-title">Stop Hiring for Titles: What Startup Hiring Actually Requires</h3>
+        <p class="media-people">Sarah Sheikh, Chief of Staff</p>
+      </a>
+      <a class="media-card" href="https://www.youtube.com/watch?v=zFFiyF59DNI&amp;t=29" target="_blank" rel="noopener">
+        <div class="media-thumb">
+          <img src="assets/media/cant-start-a-bank.jpg" alt="">
+          <span class="media-play"><svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true"><path d="M5.5 3.4v11.2L15 9 5.5 3.4Z"/></svg></span>
+        </div>
+        <div class="media-kicker">Podcast · StartWell</div>
+        <h3 class="media-title">You Can’t Start a Bank in Canada. So He Built the Next Best Thing.</h3>
+        <p class="media-people">Cato Pastoll, CEO &amp; Co-Founder</p>
+      </a>
+    </div>
+
+    <h3 class="media-subhead">Loop in the news</h3>
+    <ul class="news-list">
+      <li><a href="https://www.fintech.ca/2026/02/24/loop-launches-canadas-first-accounting-apis/" target="_blank" rel="noopener"><span class="news-text"><span class="news-src">Fintech.ca</span><span class="news-title">Loop Launches Canada’s First Accounting APIs</span></span><span class="news-arrow"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5h11M8.5 1.5 12 5l-3.5 3.5"/></svg></span></a></li>
+      <li><a href="https://www.fintech.ca/2024/09/17/loop-raises-investors-expand-banking-for-business-platform/" target="_blank" rel="noopener"><span class="news-text"><span class="news-src">Fintech.ca</span><span class="news-title">Toronto’s Loop Raises $6.4M to Further Expand Digital Banking-for-Business Platform</span></span><span class="news-arrow"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5h11M8.5 1.5 12 5l-3.5 3.5"/></svg></span></a></li>
+      <li><a href="https://www.bankonloop.com/en-ca/blog/the-new-loop" target="_blank" rel="noopener"><span class="news-text"><span class="news-src">Loop blog</span><span class="news-title">A new chapter begins for Loop</span></span><span class="news-arrow"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5h11M8.5 1.5 12 5l-3.5 3.5"/></svg></span></a></li>
+      <li><a href="https://www.linkedin.com/posts/cpastoll_why-are-we-building-loop-financial-banking-activity-7360648829089574912-vc8d/" target="_blank" rel="noopener"><span class="news-text"><span class="news-src">LinkedIn</span><span class="news-title">Cato on why we’re building Loop</span></span><span class="news-arrow"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5h11M8.5 1.5 12 5l-3.5 3.5"/></svg></span></a></li>
+      <li><a href="https://www.linkedin.com/posts/cpastoll_accountants-and-finance-teams-in-canada-have-activity-7435335245165576192-4sZB/" target="_blank" rel="noopener"><span class="news-text"><span class="news-src">LinkedIn</span><span class="news-title">Cato on what accountants and finance teams in Canada need</span></span><span class="news-arrow"><svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 5h11M8.5 1.5 12 5l-3.5 3.5"/></svg></span></a></li>
+    </ul>
   </div>
 </section>
 
@@ -507,40 +582,48 @@
 
     <div class="faq-list">
       <details class="faq-item" open>
-        <summary><i class="chev"></i>Why choose Loop</summary>
-        <div class="faq-body">Loop is a fast-growing fintech startup that enables businesses to seamlessly manage money around the world. With the only truly cross-border banking platform, our clients can access more markets, accelerate their growth, and simplify their operations.</div>
+        <summary><i class="chev"></i>Why work at Loop</summary>
+        <div class="faq-body">
+          <p>Loop is a fast-growing fintech startup building the only truly cross-border banking platform. Joining at this stage means more responsibility, faster learning, and a front-row seat as the company scales. You’ll own real problems, ship work that reaches customers quickly, and see the direct impact of what you build.</p>
+          <p>If you like moving fast, wearing a few different hats, and solving complex problems, you’ll find an environment where your work is visible and your ideas actually land. Loop is building something meaningful, and we’re only getting started, come be a part of it.</p>
+        </div>
       </details>
       <details class="faq-item">
-        <summary><i class="chev"></i>Who we're looking for</summary>
-        <div class="faq-body">Loop is enabling the next generation of businesses to thrive globally, and we're looking for ambitious people to join our mission.</div>
+        <summary><i class="chev"></i>Who we’re looking for</summary>
+        <div class="faq-body">
+          <p>We’re looking for builders. The people who thrive at Loop take ownership of a problem and see it through, even when the path isn’t obvious and the answer isn’t handed to them.</p>
+          <p>You’re quick to act, comfortable with change, and rely on good judgment to keep things moving. You also know that the best work happens together, not alone, collaborating with your peers as the team works toward one common goal: enabling the next generation of businesses to thrive globally.</p>
+          <p>If you do your best work in this kind of environment, we’d love to hear from you!</p>
+        </div>
       </details>
       <details class="faq-item">
         <summary><i class="chev"></i>How we hire</summary>
         <div class="faq-body">
-          <ol>
-            <li>30-minute virtual meeting with Sarah Sheikh (Chief of Staff)</li>
-            <li>60-minute in-person meeting with the hiring team</li>
-            <li>Take-home assignment</li>
-            <li>60-minute in-person meeting with Cato Pastoll (CEO) and Sarah Sheikh (Chief of Staff).</li>
-            <li>Background check and offer</li>
-          </ol>
+          <p>Our process is weighted toward real work, we’re interested in seeing first-hand how you think and solve problems.</p>
+          <p>You’ll typically start with a virtual meeting with our hiring manager to talk through the role, followed by an in-person meeting with the one or two team members you’d be working alongside. Most roles also include a hands-on step, such as a take-home assignment or questionnaire; engineering applicants take part in a paid, two-day in-office trial working with the team on real problems. This tends to be the most valuable part for both sides: we see how you approach the work, and you get a real feel for the team.</p>
+          <p>Along the way, you’ll also meet in person with Sarah, our Chief of Staff, and Cato, our CEO and Co-Founder. We finish with a background check before making an offer.</p>
         </div>
       </details>
       <details class="faq-item">
         <summary><i class="chev"></i>What we offer</summary>
         <div class="faq-body">
+          <p>Startups move fast, and so will you. With direct access to leadership, real involvement in strategic decisions, and mentorship from experienced people invested in your growth, you’ll see how a business runs from the inside and grow into a role that matches your skills and ambitions as the company scales.</p>
+          <p>On the day-to-day side, we also offer:</p>
           <ul>
-            <li>3 weeks vacation*</li>
-            <li>Enrolment in the group health benefits plan after your probation period*</li>
-            <li>Catered lunch every Friday</li>
-            <li>A kitchen full of snacks and drinks to keep you going throughout the day</li>
+            <li>3 weeks vacation*.</li>
+            <li>Enrolment in the group health benefits plan after your probation period*.</li>
+            <li>Catered lunch every Friday.</li>
+            <li>A kitchen full of snacks and drinks to keep you going throughout the day.</li>
           </ul>
-          <p class="faq-note">* For full-time employees only</p>
+          <p class="faq-note">*For full-time employees only</p>
         </div>
       </details>
       <details class="faq-item">
-        <summary><i class="chev"></i>Our culture</summary>
-        <div class="faq-body">At Loop, we believe the best ideas happen when we’re in the same room, bouncing ideas off one another and making things happen in real time. Headquartered and built right here in Toronto, our culture thrives on in-person collaboration. We don't do endless meetings or wait for perfect answers. We come prepared, make fast decisions, and ship work that matters. If you’re energized by autonomy, quick execution, and solving tough problems alongside a talented team, you’ll fit right in. Bonus: we are pet friendly, too!</div>
+        <summary><i class="chev"></i>Culture</summary>
+        <div class="faq-body">
+          <p>At Loop, we believe the best ideas happen when we’re in the same room, thinking out loud and making things happen in real time. Headquartered in Toronto, our culture thrives on in-person collaboration: we come prepared, make fast decisions, and skip the endless meetings and waiting for perfect answers. If you’re energized by autonomy, quick execution, and solving tough problems alongside a talented team, you’ll fit right in.</p>
+          <p>Bonus: we’re pet-friendly, too!</p>
+        </div>
       </details>
     </div>
   </div>
@@ -657,17 +740,6 @@
 </footer>
 
 <script>
-  /* ---------------- Keep the hero inside the viewport ----------------
-     The review ribbon sits above the hero, so its height comes off the cap.
-     Prototype-only: on the real site there is no ribbon and --chrome stays 0. */
-  function syncChrome() {
-    const ribbon = document.getElementById('ribbon');
-    const h = ribbon ? ribbon.offsetHeight : 0;
-    document.documentElement.style.setProperty('--chrome', h + 'px');
-  }
-  syncChrome();
-  window.addEventListener('resize', syncChrome);
-
   /* ---------------- Hero CTA: jump straight to the roles list, no smooth scroll ---------------- */
   document.querySelector('.hero-btn').addEventListener('click', e => {
     const target = document.getElementById('roles');
@@ -684,15 +756,20 @@
   /* ---------------- Leadership (real names — titles to verify; bios are drafts) ---------------- */
   const TEAM = [
     { name: "Cato Pastoll", title: "CEO & Co-Founder", photo: "assets/team/Cato.jpg",
+      linkedin: "https://www.linkedin.com/in/cpastoll/",
       bio: "Cato Pastoll, CEO and co-founder of Loop, has spent over a decade pioneering financial solutions for Canadian businesses. With deep expertise across both tech and finance, he built Loop to empower businesses to grow globally, backed by better financial services to help them manage their global finances." },
     { name: "Sarah Sheikh", title: "Chief of Staff", photo: "assets/team/Sarah.jpg",
+      linkedin: "https://www.linkedin.com/in/sarahsheikh/",
       bio: "Sarah Sheikh is an operational leader with over 15 years of experience across fintech, banking, and higher education in Canada, the USA, and the UK — working across teams to drive growth, streamline operations, and scale businesses." },
     { name: "Yan Matagne", title: "Head of Engineering", photo: "assets/team/Yan.jpg",
+      linkedin: "https://www.linkedin.com/in/yan-matagne-35862670/",
       bio: "Yan is the Head of Engineering at Loop Financial, with over 7 years of experience in Canada’s FinTech industry. He’s passionate about making product processes smoother, engineering teams sharper, and customers happier, turning complex tech problems into solutions that work for real people. Outside of solving hard engineering problems, he enjoys sharing insights on what actually works in engineering leadership." },
     { name: "Dave McKenzie", title: "Head of Finance", photo: "assets/team/Dave.jpg",
+      linkedin: "https://www.linkedin.com/in/davemckenzie85/",
       bio: "Dave McKenzie is a finance leader who has spent almost his entire career in fintech. He views finance as a profit driver for the business and an enabler of scale. Having taken part in the fintech boom in Europe over the last 15 years, he joins Loop as the Canadian fintech scene accelerates." },
-    { name: "James", title: "Head of Growth", photo: "assets/team/James.jpg",
-      bio: "James is the Head of Growth at Loop, with over a decade of experience leading go-to-market across brand, product, and growth marketing at early and growth-stage companies in fintech, B2B SaaS, marketplaces, and consumer hardware. He has led marketing through two acquisitions and launched more than 10 products, with a focus on building marketing functions that are customer-informed, operationally sound, and aligned to business outcomes." },
+    { name: "James Rutledge", title: "Head of Growth", photo: "assets/team/James.jpg",
+      linkedin: "https://www.linkedin.com/in/jamesnrutledge/",
+      bio: "James Rutledge is the Head of Growth at Loop, with over a decade of experience leading go-to-market across brand, product, and growth marketing at early and growth-stage companies in fintech, B2B SaaS, marketplaces, and consumer hardware. He has led marketing through two acquisitions and launched more than 10 products, with a focus on building marketing functions that are customer-informed, operationally sound, and aligned to business outcomes." },
   ];
 
   const tilesEl = document.getElementById('team-tiles');
@@ -708,6 +785,12 @@
       document.getElementById('team-title').textContent = p.title;
       document.getElementById('team-name').textContent = p.name;
       document.getElementById('team-bio').textContent = p.bio;
+      const li = document.getElementById('team-linkedin');
+      li.style.display = p.linkedin ? '' : 'none';
+      if (p.linkedin) {
+        li.href = p.linkedin;
+        li.setAttribute('aria-label', `${p.name} on LinkedIn`);
+      }
       document.getElementById('team-photo').innerHTML = p.photo
         ? `<img src="${p.photo}" alt="${p.name}">`
         : `Team photo —<br>${p.name}<br>(placeholder)`;
